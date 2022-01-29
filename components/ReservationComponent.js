@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Text, View, ScrollView, StyleSheet,
-    Picker, Switch, Button } from 'react-native';
+    Picker, Switch, Button, Modal } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 class Reservation extends Component {
@@ -12,7 +12,8 @@ class Reservation extends Component {
             campers: 1,
             hikeIn: false,
             date: new Date(),
-            showCalendar: false
+            showCalendar: false,
+            showModal: false
         };
     }
 
@@ -20,13 +21,22 @@ class Reservation extends Component {
         title: 'Reserve Campsite'
     }
 
+    toggleModal() {
+        this.setState({showModal: !this.state.showModal});
+    }
+
     handleReservation() {
         console.log(JSON.stringify(this.state));
+        this.toggleModal();
+    }
+
+    resetForm() {
         this.setState({
             campers: 1,
             hikeIn: false,
             date: new Date(),
-            showCalendar: false     
+            showCalendar: false,
+            showModal: false
         });
     }
 
@@ -87,10 +97,35 @@ class Reservation extends Component {
                         onPress={() => this.handleReservation()}
                         title='Search'
                         color='#5637DD'
-                        accessibilityLabel='Tap me to search for available campsites to reserve'
                     />
                 </View>
-                <Separator />
+                <Modal
+                    animationType={'slide'}
+                    transparent={false}
+                    visible={this.state.showModal}
+                    onRequestClose={() => this.toggleModal()}
+                >
+                    <View style={styles.modal}>
+                        <Text style={styles.modalTitle}>Search Campsite Reservations</Text>
+                        <Text style={styles.modalText}>
+                            Number of Campers: {this.state.campers}
+                        </Text>
+                        <Text style={styles.modalText}>
+                            Hike-In?: {this.state.hikeIn ? 'Yes' : 'No'}
+                        </Text>
+                        <Text style={styles.modalText}>
+                            Date: {this.state.date.toLocaleDateString('en-US')}
+                        </Text>
+                        <Button
+                            onPress={() => {
+                                this.toggleModal();
+                                this.resetForm();
+                            }}
+                            color='#5637DD'
+                            title='Close'
+                        />
+                    </View>
+                </Modal>
             </ScrollView>
         );
     }
@@ -110,6 +145,7 @@ const styles = StyleSheet.create({
     },
     formLabel: {
         fontSize: 20,
+        fontWeight: 'bold',
         flex: 2,
         flexDirection: 'row',
         justifyContent: 'space-between'
@@ -121,7 +157,24 @@ const styles = StyleSheet.create({
         marginVertical: 4,
         borderBottomColor: '#737373',
         borderBottomWidth: StyleSheet.hairlineWidth,
-      },
+    },
+    modal: { 
+        justifyContent: 'center',
+        margin: 20
+    },
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        backgroundColor: '#5637DD',
+        textAlign: 'center',
+        color: '#fff',
+        marginBottom: 20
+    },
+    modalText: {
+        fontSize: 18,
+        margin: 10
+    }
+    
 });
 
 export default Reservation;
