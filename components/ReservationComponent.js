@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         flex: 2,
         flexDirection: 'row',
-        justifyContent: 'space-between'
     },
     formItem: {
         flex: 1
