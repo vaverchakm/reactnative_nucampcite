@@ -6,10 +6,33 @@ import { comments } from './comments';
 import { promotions } from './promotions';
 import { partners } from './partners';
 import { favorites } from './favorites';
+import { persistStore, persistCombineReducers } from 'redux-persist';
+import storage from 'redux-persist/es/storage';
+
+// export const ConfigureStore = () => {
+//     const store = createStore(
+//         combineReducers({
+//             campsites,
+//             comments,
+//             partners,
+//             promotions,
+//             favorites
+//         }),
+//         applyMiddleware(thunk, logger)
+//     );
+
+//     return store;
+// }
+
+const config = {
+    key: 'root',
+    storage,
+    debug: true
+}
 
 export const ConfigureStore = () => {
     const store = createStore(
-        combineReducers({
+        persistCombineReducers(config, {
             campsites,
             comments,
             partners,
@@ -19,5 +42,7 @@ export const ConfigureStore = () => {
         applyMiddleware(thunk, logger)
     );
 
-    return store;
-}
+    const persistor = persistStore(store);
+
+    return { persistor, store };
+};
